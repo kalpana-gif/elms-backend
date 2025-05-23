@@ -1,5 +1,5 @@
 // src/controllers/userController.js
-const { saveUser, getAllUsers, getUserByIdFromDB, deleteUserById, updateUserById } = require('../services/userService');
+const { saveUser, getAllUsers, getUserByIdFromDB, deleteUserById, updateUserById , findUserByCredentials} = require('../services/userService');
 
 const createUser = async (req, res) => {
     try {
@@ -76,4 +76,26 @@ const updateUser = async (req, res) => {
 };
 
 
-module.exports = { createUser, getAllUser , getUserById , deleteUser, updateUser};
+const loginUser = async (req, res) => {
+    const { email, password } = req.body;
+
+
+    try {
+        const user = await findUserByCredentials(email, password);
+
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
+        res.json({
+            uid: user.id,
+            email: user.email,
+            role: user.role,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message || 'Server error' });
+    }
+};
+
+
+module.exports = { createUser, getAllUser , getUserById , deleteUser, updateUser ,loginUser};

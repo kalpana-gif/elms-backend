@@ -40,4 +40,20 @@ const updateUserById = async (id, data) => {
     }
 };
 
-module.exports = { saveUser,getAllUsers,getUserByIdFromDB ,deleteUserById ,updateUserById };
+const findUserByCredentials = async (email, password) => {
+    try {
+        const user = await prisma.user.findFirst({
+            where: {
+                email: email,
+                password: password,
+            },
+        });
+
+        return user;
+    } catch (error) {
+        console.error('Error finding user:', error);
+        throw new Error('Internal server error');
+    }
+};
+
+module.exports = { saveUser,getAllUsers,getUserByIdFromDB ,deleteUserById ,updateUserById ,findUserByCredentials };
