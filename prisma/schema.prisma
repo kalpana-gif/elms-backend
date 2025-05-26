@@ -17,4 +17,18 @@ model User {
   role      String
   password  String
   createdAt DateTime @default(now())
+
+  guardianMappings GuardianMapping[] @relation("Guardian")
+  studentMappings  GuardianMapping[] @relation("Student")
+}
+
+model GuardianMapping {
+  id         String   @id @default(uuid())
+  studentId  String   @unique
+  guardianId String
+  batchYear  Int
+  createdAt  DateTime @default(now())
+
+  student  User @relation("Student", fields: [studentId], references: [id])
+  guardian User @relation("Guardian", fields: [guardianId], references: [id])
 }

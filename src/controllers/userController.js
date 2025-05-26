@@ -1,5 +1,5 @@
 // src/controllers/userController.js
-const { saveUser, getAllUsers, getUserByIdFromDB, deleteUserById, updateUserById , findUserByCredentials} = require('../services/userService');
+const { saveUser, getAllUsers, getUserByIdFromDB, deleteUserById, updateUserById , findUserByCredentials , assignGuardianService,  getGuardianByStudentId ,getAllGuardianMappings} = require('../services/userService');
 
 const createUser = async (req, res) => {
     try {
@@ -12,14 +12,15 @@ const createUser = async (req, res) => {
 };
 
 const getAllUser = async (req, res) => {
+    const { role } = req.query;
+
     try {
-        const users = await getAllUsers(); // ✅ Fetch users instead of saving
+        const users = await getAllUsers(role);
         res.status(200).json(users);
     } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).json({ error: 'Failed to fetch users' });
     }
-
 };
 
 const getUserById = async (req, res) => {
@@ -97,5 +98,55 @@ const loginUser = async (req, res) => {
     }
 };
 
+const assignGuardian = async (req, res) => {
+    const { id: studentId } = req.params;
+    const { guardianId, batchYear } = req.body;
 
-module.exports = { createUser, getAllUser , getUserById , deleteUser, updateUser ,loginUser};
+    if (!guardianId) {
+        return res.status(400).json({ error: 'Guardian ID is required' });
+    }
+
+    if (!batchYear) {
+        return res.status(400).json({ error: 'batchYear is required' });
+    }
+
+    try {
+        const result = await assignGuardianService(studentId, guardianId, batchYear);
+        console.log(`Guardian ${guardianId} assigned to Student ${studentId} for batch ${batchYear}`);
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("Error in assignGuardian:", error.message);
+        res.status(500).json({ error: 'Failed to assign guardian' });
+    }
+};
+
+
+
+
+const getGuardianbyStudent = async (req, res) => {
+    const studentId = req.params.id;
+
+    try {
+        const guardian = await getGuardianByStudentId(studentId);
+        res.json(guardian);
+    } catch (error) {
+        console.error('Error fetching guardian:', error.message);
+        res.status(404).json({ message: error.message });
+    }
+};
+
+const getGuardianMapping = async (req, res) => {
+    try {
+        const mappings = await getAllGuardianMappings();
+        res.status(200).json(mappings);
+    } catch (error) {
+        console.error('Error fetching guardian mappings:', error.message);
+        res.status(500).json({ error: 'Failed to fetch guardian mappings' });
+    }
+};
+
+
+
+
+
+module.exports = { createUser, getAllUser , getUserById , deleteUser, updateUser ,loginUser ,assignGuardian , getGuardianbyStudent , getGuardianMapping};
