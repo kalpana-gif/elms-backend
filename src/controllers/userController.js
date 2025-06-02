@@ -100,7 +100,12 @@ const loginUser = async (req, res) => {
 
 const assignGuardian = async (req, res) => {
     const { id: studentId } = req.params;
-    const { guardianId, batchYear } = req.body;
+    const { guardianId, batchYear, subjectIds } = req.body;
+
+    console.log(subjectIds)
+    console.log(guardianId)
+    console.log(batchYear)
+
 
     if (!guardianId) {
         return res.status(400).json({ error: 'Guardian ID is required' });
@@ -110,9 +115,13 @@ const assignGuardian = async (req, res) => {
         return res.status(400).json({ error: 'batchYear is required' });
     }
 
+    if (!subjectIds) {
+        return res.status(400).json({ error: 'batchYear is required' });
+    }
+
     try {
-        const result = await assignGuardianService(studentId, guardianId, batchYear);
-        console.log(`Guardian ${guardianId} assigned to Student ${studentId} for batch ${batchYear}`);
+        const result = await assignGuardianService(studentId, guardianId, batchYear, subjectIds || []);
+        console.log(`Guardian ${guardianId} assigned to Student ${studentId} for batch ${batchYear} with subjects: ${subjectIds}`);
         res.status(200).json(result);
     } catch (error) {
         console.error("Error in assignGuardian:", error.message);

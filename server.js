@@ -3,6 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const userRoutes = require('./src/routes/v1/userRoutes');
+const subjectRoutes = require('./src/routes/v1/subjectRoutes');
+const studentRoutes = require('./src/routes/v1/studentRoutes');
+const classroomRoutes = require('./src/routes/v1/classRoutes');
 require('./src/configs/db'); // DB connection
 
 const app = express();
@@ -22,6 +25,10 @@ app.use(morgan('dev'));
 
 // API Versioning
 app.use('/api/v1/', userRoutes);
+app.use('/api/v1/', subjectRoutes);
+app.use('/api/v1/', studentRoutes);
+app.use('/api/v1/', classroomRoutes);
+
 
 // Default route
 app.get('/', (req, res) => {

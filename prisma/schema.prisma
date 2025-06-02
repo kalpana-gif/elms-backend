@@ -20,6 +20,12 @@ model User {
 
   guardianMappings GuardianMapping[] @relation("Guardian")
   studentMappings  GuardianMapping[] @relation("Student")
+
+  subjects StudentSubject[] @relation("StudentSubjects")
+
+  // New relations for Classroom
+  classroomsTeaching Classroom[]        @relation("ClassTeacher")
+  classesEnrolled    ClassroomStudent[] @relation("StudentInClass")
 }
 
 model GuardianMapping {
@@ -31,4 +37,40 @@ model GuardianMapping {
 
   student  User @relation("Student", fields: [studentId], references: [id])
   guardian User @relation("Guardian", fields: [guardianId], references: [id])
+}
+
+model Subject {
+  id       String           @id @default(uuid())
+  name     String           @unique
+  code     String           @unique
+  students StudentSubject[] @relation("StudentSubjects")
+}
+
+model StudentSubject {
+  id        String @id @default(uuid())
+  studentId String
+  subjectId String
+
+  student User    @relation("StudentSubjects", fields: [studentId], references: [id])
+  subject Subject @relation("StudentSubjects", fields: [subjectId], references: [id])
+}
+
+model Classroom {
+  id        String   @id @default(uuid())
+  name      String
+  teacherId String
+  batchYear Int
+  createdAt DateTime @default(now())
+
+  teacher  User               @relation("ClassTeacher", fields: [teacherId], references: [id])
+  students ClassroomStudent[] @relation("ClassroomStudents")
+}
+
+model ClassroomStudent {
+  id          String @id @default(uuid())
+  classroomId String
+  studentId   String
+
+  classroom Classroom @relation("ClassroomStudents", fields: [classroomId], references: [id])
+  student   User      @relation("StudentInClass", fields: [studentId], references: [id])
 }
