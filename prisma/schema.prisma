@@ -26,6 +26,10 @@ model User {
   // New relations for Classroom
   classroomsTeaching Classroom[]        @relation("ClassTeacher")
   classesEnrolled    ClassroomStudent[] @relation("StudentInClass")
+
+  // New relations for Mark
+  marksGiven    Mark[] @relation("MarksByTeacher")
+  marksReceived Mark[] @relation("MarksByStudent")
 }
 
 model GuardianMapping {
@@ -44,6 +48,7 @@ model Subject {
   name     String           @unique
   code     String           @unique
   students StudentSubject[] @relation("StudentSubjects")
+  Mark     Mark[]
 }
 
 model StudentSubject {
@@ -64,6 +69,7 @@ model Classroom {
 
   teacher  User               @relation("ClassTeacher", fields: [teacherId], references: [id])
   students ClassroomStudent[] @relation("ClassroomStudents")
+  Mark     Mark[]
 }
 
 model ClassroomStudent {
@@ -73,4 +79,23 @@ model ClassroomStudent {
 
   classroom Classroom @relation("ClassroomStudents", fields: [classroomId], references: [id])
   student   User      @relation("StudentInClass", fields: [studentId], references: [id])
+}
+
+model Mark {
+  id          String   @id @default(uuid())
+  studentId   String
+  subjectId   String
+  teacherId   String
+  classroomId String?
+  batchYear   Int?
+  marks       Float
+  examType    String
+  createdAt   DateTime @default(now())
+
+  student   User       @relation("MarksByStudent", fields: [studentId], references: [id])
+  subject   Subject    @relation(fields: [subjectId], references: [id])
+  teacher   User       @relation("MarksByTeacher", fields: [teacherId], references: [id])
+  classroom Classroom? @relation(fields: [classroomId], references: [id])
+
+  @@unique([studentId, subjectId, teacherId, examType])
 }

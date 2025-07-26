@@ -6,6 +6,8 @@ const userRoutes = require('./src/routes/v1/userRoutes');
 const subjectRoutes = require('./src/routes/v1/subjectRoutes');
 const studentRoutes = require('./src/routes/v1/studentRoutes');
 const classroomRoutes = require('./src/routes/v1/classRoutes');
+const markRoutes = require('./src/routes/v1/markRoutes');
+
 require('./src/configs/db'); // DB connection
 
 const app = express();
@@ -28,6 +30,7 @@ app.use('/api/v1/', userRoutes);
 app.use('/api/v1/', subjectRoutes);
 app.use('/api/v1/', studentRoutes);
 app.use('/api/v1/', classroomRoutes);
+app.use('/api/v1/exam/mark-entry', markRoutes);
 
 
 // Default route
