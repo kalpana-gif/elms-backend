@@ -346,6 +346,51 @@ const batchUpdateMarks = async (markEntries) => {
     }
 };
 
+const getAllMarks = async () => {
+    try {
+        return await prisma.mark.findMany({
+            include: {
+                student: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                    },
+                },
+                subject: {
+                    select: {
+                        id: true,
+                        name: true,
+                        code: true,
+                    },
+                },
+                teacher: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                    },
+                },
+                classroom: {
+                    select: {
+                        id: true,
+                        name: true,
+                        batchYear: true,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+    } catch (error) {
+        throw new Error('Failed to fetch all marks: ' + error.message);
+    }
+};
+
+
 module.exports = {
     getStudents,
     getBatchYears,
@@ -354,4 +399,5 @@ module.exports = {
     getExistingMarks,
     batchCreateMarks,
     batchUpdateMarks,
+    getAllMarks
 };

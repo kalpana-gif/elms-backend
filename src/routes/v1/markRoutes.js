@@ -8,5 +8,6 @@ router.get('/classrooms', markEntryController.getClassrooms);
 router.get('/student-subjects', markEntryController.getStudentSubjects);
 router.post('/marks/batch', markEntryController.batchCreateMarks);
 router.put('/marks/batch', markEntryController.batchUpdateMarks);
+router.get('/all-marks', markEntryController.getAllMarks);
 
 module.exports = router;

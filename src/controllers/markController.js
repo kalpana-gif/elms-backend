@@ -89,6 +89,15 @@ const batchUpdateMarks = async (req, res) => {
         res.status(status).json({ error: error.message });
     }
 };
+const getAllMarks = async (req, res) => {
+    console.log("getAllMarks")
+    try {
+        const marks = await markEntryService.getAllMarks();
+        res.status(200).json(marks);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 module.exports = {
     getStudents,
@@ -98,4 +107,5 @@ module.exports = {
     getExistingMarks,
     batchCreateMarks,
     batchUpdateMarks,
+    getAllMarks
 };
