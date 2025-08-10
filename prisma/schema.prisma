@@ -73,6 +73,7 @@ model Classroom {
   teacher  User               @relation("ClassTeacher", fields: [teacherId], references: [id])
   students ClassroomStudent[] @relation("ClassroomStudents")
   Mark     Mark[]
+  Exam     Exam[]
 }
 
 model ClassroomStudent {
@@ -113,4 +114,18 @@ model Notification {
   updatedAt   DateTime @updatedAt
 
   createdBy User @relation("NotificationCreatedBy", fields: [createdById], references: [id])
+}
+
+model Exam {
+  id          String   @id @default(uuid())
+  title       String
+  classroomId String
+  date        DateTime
+  description String?
+  fileData    Bytes? // File as BLOB
+  fileName    String?
+  fileType    String?
+  createdAt   DateTime @default(now())
+
+  classroom Classroom @relation(fields: [classroomId], references: [id])
 }
